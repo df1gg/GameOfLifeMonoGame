@@ -8,7 +8,8 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    Texture2D _cellTexture;
+    private Texture2D _cellTexture;
+    private Texture2D _lineTexture;
 
     private GridManager _gridManager;
     private int _counter;
@@ -37,8 +38,12 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+
         _cellTexture = new Texture2D(GraphicsDevice, 1, 1);
         _cellTexture.SetData(new Color[]{ Color.White });
+
+        _lineTexture = new Texture2D(GraphicsDevice, 1, 1);
+        _lineTexture.SetData(new Color[]{ Color.White });
     }
 
     protected override void Update(GameTime gameTime)
@@ -93,6 +98,21 @@ public class Game1 : Game
         }
     }
 
+    private void DrawGridLines()
+    {
+        // Draw vertical lines
+        for (int x = 0; x <= GameSettings.GridWidth; x++)
+        {
+            _spriteBatch.Draw(_lineTexture, new Rectangle(x * GameSettings.CellSize, 0, 1, GameSettings.GridHeight * GameSettings.CellSize), new Color(50, 50, 50, 5));
+        }
+
+        // Draw horizontal lines
+        for (int y = 0; y <= GameSettings.GridHeight; y++)
+        {
+            _spriteBatch.Draw(_lineTexture, new Rectangle(0, y * GameSettings.CellSize, GameSettings.GridWidth * GameSettings.CellSize, 1), new Color(50, 50, 50, 5));
+        }
+    }
+
     protected override void Draw(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Gray);
@@ -103,10 +123,13 @@ public class Game1 : Game
         {
             for (int y = 0; y < GameSettings.GridHeight; y++)
             {
-                var color = _gridManager.CurrentGrid[x, y] ? Color.White : Color.Black;
+                var color = _gridManager.CurrentGrid[x, y] ? Color.CornflowerBlue : new Color(40, 40, 40);
                 _spriteBatch.Draw(_cellTexture, new Rectangle(x * GameSettings.CellSize, y * GameSettings.CellSize, GameSettings.CellSize, GameSettings.CellSize), color);
             }
         }
+
+        // Draw lines
+        DrawGridLines();
 
         _spriteBatch.End();
 
