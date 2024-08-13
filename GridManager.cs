@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace GameOfLifeMonoGame
 {
@@ -36,7 +37,11 @@ namespace GameOfLifeMonoGame
                 for (int y = 0; y < GameSettings.GridHeight; y++)
                 {
                     int aliveNeighbors = GetAliveNeighbors(x, y);
-                    _nextGrid[x, y] = (aliveNeighbors == 3) || (aliveNeighbors == 2 && _currentGrid[x, y]);
+
+                    bool shouldLive = GameSettings.SurvivalRules.Contains(aliveNeighbors) && _currentGrid[x, y];
+                    bool shouldBeBorn = GameSettings.BirthRules.Contains(aliveNeighbors);
+                    
+                    _nextGrid[x, y] = shouldBeBorn || shouldLive;
                 }
             }
 
